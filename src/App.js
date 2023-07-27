@@ -1,13 +1,13 @@
-import logo from "./logo.svg";
-import "./App.css";
+import "./App.scss";
+import Header from "./components/Header";
+import TableUsers from "./components/TableUsers";
 
 const App = () => {
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Hello world</h1>
-      </header>
+    <div className="app-container">
+      <Header />
+      <TableUsers />
     </div>
   );
 };
