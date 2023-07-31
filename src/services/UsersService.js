@@ -1,6 +1,9 @@
 import axios from "./customize-axios";
-const fecthAllUser = () => {
-    return axios.get("/api/users?page=1")
+const fecthAllUser = (page) => {
+    return axios.get(`/api/users?page=${page}`)
 }
 
-export { fecthAllUser }
+const fecthCreatUser = (name, job) => {
+    return axios.post('/api/users', { name, job })
+}
+export { fecthAllUser, fecthCreatUser }
