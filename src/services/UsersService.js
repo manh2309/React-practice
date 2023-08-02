@@ -6,4 +6,7 @@ const fecthAllUser = (page) => {
 const fecthCreatUser = (name, job) => {
     return axios.post('/api/users', { name, job })
 }
-export { fecthAllUser, fecthCreatUser }
+const fechtEditUser = (id, name, job) => {
+    return axios.put(`/api/users/${id}`, { name, job })
+}
+export { fecthAllUser, fecthCreatUser, fechtEditUser }
