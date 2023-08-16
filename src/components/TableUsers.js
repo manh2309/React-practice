@@ -7,9 +7,11 @@ import { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import ModalEdit from './ModalEditUsers';
 import ModalConFirm from './ModalConfirm';
-import _, { debounce, filter, includes, set } from "lodash";
+import _, { debounce, filter, get, includes, set } from "lodash";
 import { CSVLink, CSVDownload } from 'react-csv';
 import './TableUsers.scss';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const TableUsers = (props) => {
     const [listUser, setListUser] = useState([]);
@@ -27,6 +29,9 @@ const TableUsers = (props) => {
     const [sortField, setSortField] = useState("id");
 
     const [dataExport, setDataExport] = useState([]);
+    const [tokenData, setTokenData] = useState("");
+
+    const navigate = useNavigate();
 
     const handleClose = () => {
         setIsShowModalAddNew(false)
@@ -62,18 +67,26 @@ const TableUsers = (props) => {
         // setListUser(cloneListUser);
         getUsers(0, 5);
     }
+    const checkUrl = () => {
+        let token = localStorage.getItem("token");
+        console.log(token);
+        if (token) {
+            setTokenData(token);
+            getUsers(0, 5);
+        } else {
+            navigate("/login");
+            toast.warning("Please Login!")
+        }
+    }
     useEffect(() => {
         //call apis
-        getUsers(0, 5);
-        console.log(listUser);
+        checkUrl();
     }, [])
 
     const getUsers = async (page, size) => {
         let res = await fecthAllUser(page, size);
-        console.log(res);
         if (res && res.content) {
             setTotalUsers(res.total);
-            console.log("check", res);
             setTotalPages(res.totalPages);
             setListUser(res.content);
         }
@@ -129,7 +142,7 @@ const TableUsers = (props) => {
             <span><b>List User:</b></span>
             <div className='group-btn'>
                 <label className='btn btn-warning' htmlFor='import'>
-                    <i class="fa-solid fa-file-import"></i> Import</label>
+                    <i className="fa-solid fa-file-import"></i> Import</label>
                 <input id="import" type='file' hidden />
                 <CSVLink
                     data={listUser}
