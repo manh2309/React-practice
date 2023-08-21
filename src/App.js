@@ -12,14 +12,18 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useContext } from "react";
 import { UserContext } from "./context/UserContext";
 import AppRoutes from "./routes/AppRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { handleRefecth } from "./redux/action/usersAction";
 
 const App = () => {
-  const [dataToken, setDataToken] = useState("");
   const navigate = useNavigate();
-  const { user, loginContext } = useContext(UserContext);
+  // const { user, loginContext } = useContext(UserContext);
+  // const dataUserRedux = useSelector(state => state.user.account);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      loginContext(localStorage.getItem("email"), localStorage.getItem("token"));
+      dispatch(handleRefecth());
     }
   }, [])
   return (

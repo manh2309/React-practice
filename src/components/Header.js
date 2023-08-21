@@ -8,11 +8,15 @@ import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { useEffect, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleLogoutRedux } from '../redux/action/usersAction';
 
 const Header = (props) => {
     const navigate = useNavigate();
     const [tokenData, setTokenData] = useState("");
+    const account = useSelector(state => state.user.account);
     const { logout, user } = useContext(UserContext);
+    const dispatch = useDispatch();
     // const [hideHeader, setHideHeader] = useState(false);
 
     // useEffect(() => {
@@ -21,12 +25,12 @@ const Header = (props) => {
     //     }
     // }, [true])
     const handleLogout = () => {
-        logout();
-        navigate('/login');
-        toast.success("Log out Success!!")
+        // logout();
+        dispatch(handleLogoutRedux());
+
     }
     const handleCheck = () => {
-        let token = localStorage.getItem("token");
+        let token = account.token;
         console.log(token);
         if (token) {
             setTokenData(token);
@@ -49,11 +53,15 @@ const Header = (props) => {
     //     }
 
     // }
-    // useEffect(() => {
-    //     handleCheck();
-    // }, [""])
+    useEffect(() => {
+        if (account && account.auth === false) {
+            navigate('/login');
+            toast.success("Log out Success!!")
+        }
+    }, [account])
     return (
         <>
+            {console.log("check", tokenData)}
             <Navbar expand="lg" bg='light'>
                 <Container>
                     <Navbar.Brand>
@@ -67,24 +75,24 @@ const Header = (props) => {
                         React-Bootstrap</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        {(user && user.auth || window.location.pathname === '/') &&
+                        {(account && account.auth || window.location.pathname === '/') &&
                             <>
                                 < Nav className="me-auto">
-                                    <NavLink to={!tokenData ? "/login" : "/"} className="nav-link"
+                                    <NavLink to="/" className="nav-link"
                                         onClick={() => handleCheck()}
                                     >
                                         Home
                                     </NavLink>
-                                    <NavLink to={!tokenData ? "/login" : "/users"} className="nav-link"
+                                    <NavLink to="/users" className="nav-link"
                                         onClick={() => handleCheck()}
                                     > Manager Users</NavLink>
                                     <NavLink to="/register" className="nav-link"
                                     > Register</NavLink>
                                 </Nav>
                                 <Nav>
-                                    {user && user.email && <span className='nav-link'>Welcom {user.email}</span>}
+                                    {account && account.email && <span className='nav-link'>Welcom {account.email}</span>}
                                     <NavDropdown title="Setting" >
-                                        {user && user.auth === true ? <NavDropdown.Item onClick={() => handleLogout()}>
+                                        {account && account.auth === true ? <NavDropdown.Item onClick={() => handleLogout()}>
                                             Logout
                                         </NavDropdown.Item> : <NavLink to='/login' className="dropdown-item">Login</NavLink>}
                                     </NavDropdown>
