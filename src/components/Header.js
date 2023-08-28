@@ -54,7 +54,7 @@ const Header = (props) => {
 
     // }
     useEffect(() => {
-        if (account && account.auth === false) {
+        if (account && account.auth === false && window.location.pathname !== '/login') {
             navigate('/login');
             toast.success("Log out Success!!")
         }
